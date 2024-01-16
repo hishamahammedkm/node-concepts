@@ -15,9 +15,13 @@ export class AppController {
     return this.appService.blocking();
   }
 
-  @Get('nonBlocking')
-  async nonBlocking() {
-    return this.appService.nonBlocking();
+  @Get('api-blocking')
+  api2Blocking() {
+    return this.appService.apiBlocking();
+  }
+  @Get('worker')
+  async worker() {
+    return this.appService.worker();
   }
 
   @Get('promises')
@@ -28,9 +32,5 @@ export class AppController {
   @Get('promisesParallel')
   async promisesParallel() {
     return this.appService.promisesParallel();
-  }
-  @Get('worker')
-  async worker() {
-    return this.appService.worker();
   }
 }

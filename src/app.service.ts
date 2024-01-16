@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Worker } from 'worker_threads';
 import { workerThreadFilePath } from './worker/config';
+import axios from 'axios';
 
 @Injectable()
 export class AppService {
@@ -15,14 +16,24 @@ export class AppService {
     while (new Date().getTime() < now + 10000) {}
     return { message: ' Blocking call ' };
   }
-
-  async nonBlocking() {
-    return new Promise(async (resolve) => {
-      setTimeout(() => {
-        resolve({ message: 'Non Blocking call ' });
-      }, 10000);
-    });
+  async apiBlocking() {
+    try {
+      const res = await axios.get(
+        'https://nodejs-concepts-7kop5zjyeq-el.a.run.app/blocking',
+      );
+      return res.data;
+    } catch (error) {
+      throw new Error('api failed');
+    }
   }
+
+  // async nonBlocking() {
+  //   return new Promise(async (resolve) => {
+  //     setTimeout(() => {
+  //       resolve({ message: 'Non Blocking call ' });
+  //     }, 10000);
+  //   });
+  // }
 
   async promises() {
     const results = [];
