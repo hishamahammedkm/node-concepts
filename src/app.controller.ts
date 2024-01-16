@@ -6,7 +6,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
+  getHello() {
     return this.appService.getHello();
   }
 
@@ -28,5 +28,9 @@ export class AppController {
   @Get('promisesParallel')
   async promisesParallel() {
     return this.appService.promisesParallel();
+  }
+  @Get('worker')
+  async worker() {
+    return this.appService.worker();
   }
 }

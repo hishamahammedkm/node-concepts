@@ -1,23 +1,25 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Worker } from 'worker_threads';
+import { workerThreadFilePath } from './worker/config';
 
 @Injectable()
 export class AppService {
   private readonly logger = new Logger();
 
-  getHello(): string {
-    return 'Hello World!';
+  getHello() {
+    return { message: 'Non Blocking call ' };
   }
 
   blocking() {
     const now = new Date().getTime();
     while (new Date().getTime() < now + 10000) {}
-    return {};
+    return { message: ' Blocking call ' };
   }
 
   async nonBlocking() {
     return new Promise(async (resolve) => {
       setTimeout(() => {
-        resolve({});
+        resolve({ message: 'Non Blocking call ' });
       }, 10000);
     });
   }
@@ -38,12 +40,33 @@ export class AppService {
     return Promise.all(promises);
   }
 
+  async worker() {
+    return new Promise((resolve, reject) => {
+      const worker = new Worker(workerThreadFilePath, {
+        workerData: {
+          data: 'this is data',
+        },
+      });
+      worker.on('message', (message) => {
+        console.log('Main thread got message:', message);
+        resolve({ message });
+      });
+      worker.on('error', (err) => {
+        console.error('Worker threw an error:', err);
+        reject(err);
+      });
+      worker.on('exit', (code) => {
+        console.log('Worker did exit with code:', code);
+      });
+    });
+  }
+
   private async sleep() {
     return new Promise((resolve) => {
       this.logger.log('Start sleep');
       setTimeout(() => {
         this.logger.log('Sleep complete');
-        resolve({});
+        resolve({ id: Math.random() });
       }, 1000);
     });
   }
