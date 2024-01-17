@@ -8,6 +8,7 @@ export class AppService {
   private readonly logger = new Logger();
 
   getHello() {
+
     return { message: 'Non Blocking call ' };
   }
 
@@ -59,7 +60,7 @@ export class AppService {
         },
       });
       worker.on('message', (message) => {
-        console.log('Main thread got message:', message);
+
         resolve({ message });
       });
       worker.on('error', (err) => {
